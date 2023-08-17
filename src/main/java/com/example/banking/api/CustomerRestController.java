@@ -19,11 +19,12 @@ import java.util.List;
 public class CustomerRestController {
     private final CustomerService customerService;
 
-    @GetMapping
+
 ////    public List<Customers> findAll() {
 ////        return customerService.findAll();
 ////    }
-    public Page<Customers> findAll(@RequestParam(defaultValue = "") @PageableDefault(size = 10)Pageable pageable) {
+    @GetMapping
+    public Page<Customers> findAll(@PageableDefault()Pageable pageable) {
         return customerService.findAll(pageable);
     }
 //@GetMapping

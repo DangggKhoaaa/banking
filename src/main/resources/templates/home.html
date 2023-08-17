@@ -220,12 +220,12 @@
       success: function (res) {
         strBody.empty();
 
-        $.each(res, (index, item) => {
+        $.each(res.content, (index, item) => {
           const str = renderCustomer(item);
           $(strBody).prepend(str);
         })
 
-        // renderPagination();
+        renderPagination();
 
 
         $('.edit').on('click', function () {
