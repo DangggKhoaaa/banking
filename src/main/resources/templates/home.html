@@ -185,7 +185,17 @@
               <input type="text" id="fullNamePlus" class="form-control" readonly>
             </div>
             <div class="col-lg-6">
-              <label for="emailUp">Deposit</label>
+              <label for="emailPlus">Email</label>
+              <input type="email" id="emailPlus" class="form-control" readonly>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-lg-6">
+              <label for="balancePlus">Balance</label>
+              <input type="number" id="balancePlus" class="form-control" readonly>
+            </div>
+            <div class="col-lg-6">
+              <label for="deposit">Deposit</label>
               <input type="number" id="deposit" class="form-control">
             </div>
           </div>
@@ -219,7 +229,17 @@
               <input type="text" id="fullNameMinus" class="form-control" readonly>
             </div>
             <div class="col-lg-6">
-              <label for="emailUp">Deposit</label>
+              <label for="emailMinus">Email</label>
+              <input type="email" id="emailMinus" class="form-control" readonly>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-lg-6">
+              <label for="balanceMinus">Balance</label>
+              <input type="number" id="balanceMinus" class="form-control" readonly>
+            </div>
+            <div class="col-lg-6">
+              <label for="withdraw">Deposit</label>
               <input type="number" id="withdraw" class="form-control">
             </div>
           </div>
@@ -248,14 +268,24 @@
 
             <div class="row mb-3">
               <div class="col-lg-6">
-                <label for="fullNameUp">FullName</label>
-                <input type="text" id="fullNameTransfer" class="form-control" readonly>
+                <label for="fullNameSender">Tên người gửi</label>
+                <input type="text" id="fullNameSender" class="form-control" readonly>
               </div>
               <div class="col-lg-6">
-                <label for="emailUp">Tên người nhận</label>
+                <label for="selectTransfer">Tên người nhận</label>
                 <select class="form-select" aria-label="Default select example" id="selectTransfer">
 
                 </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-lg-6">
+                <label for="emailSender">Email người gửi</label>
+                <input type="email" id="emailSender" class="form-control" readonly>
+              </div>
+              <div class="col-lg-6">
+                <label for="emailRecipient">Email người nhận</label>
+                <input type="email" id="emailRecipient" class="form-control" readonly>
               </div>
             </div>
             <div class="row mb-3">
@@ -562,6 +592,8 @@
         method: "GET"
       }).done(data => {
         $("#fullNamePlus").val(data.fullName);
+        $("#emailPlus").val(data.email);
+        $("#balancePlus").val(data.balance)
         document.getElementById("btnPlus").onclick = function () {
           plus(data.id)
         }
@@ -616,6 +648,8 @@ function showMinus(id) {
       method: "GET"
     }).done(data => {
       $("#fullNameMinus").val(data.fullName);
+      $("#emailMinus").val(data.email);
+      $("#balanceMinus").val(data.balance);
       document.getElementById("btnMinus").onclick = function () {
         minus(data.id)
       }
@@ -677,15 +711,22 @@ function minus(id) {
 
   function showFormTransfer(id) {
     document.getElementById("balance").value = document.getElementById("balance-" + id).innerText;
-    document.getElementById("fullNameTransfer").value = document.getElementById("tr_" + id).querySelectorAll("td")[1].innerText;
+    document.getElementById("fullNameSender").value = document.getElementById("tr_" + id).querySelectorAll("td")[1].innerText;
+    document.getElementById("emailSender").value = document.getElementById("tr_" + id).querySelectorAll("td")[2].innerText;
+
+    document.getElementById("selectTransfer").addEventListener("change", function() {
+      const selectedOption = this.options[this.selectedIndex];
+      document.getElementById("emailRecipient").value = selectedOption.getAttribute("data-email");
+    });
+
     $.ajax({
       url: url + "/all",
       method: "GET"
     }).done(data => {
      const transferCustomer = data.filter(customer => customer.id !== id);
-     let html = '';
+     let html = '<option>--Chọn người cần chuyển khoản--</option>';
      transferCustomer.map(customer => {
-       html += ` <option value="${customer.id}">${customer.fullName}</option>`
+       html += `<option value="${customer.id}" data-email="${customer.email}">${customer.fullName}</option>`;
      })
       document.getElementById("selectTransfer").innerHTML = html;
       document.getElementById("btnTransfer").onclick = function () {
@@ -697,7 +738,6 @@ function minus(id) {
   }
 
   function transferAmount(idSender, idRecipient) {
-
 
     const amount = +$("#transfer").val();
     const balance = +$("#balance-" + idSender).text();
@@ -735,7 +775,7 @@ function minus(id) {
 
           webToast.Success({
             status: 'Chuyển tiền thành công !!!',
-            message: 'Số dư còn lại: ' + (balance - amount),
+            message: 'Số dư tài khoản: ' + (balance - amount),
             delay: 2000,
             align: 'topright'
           });
