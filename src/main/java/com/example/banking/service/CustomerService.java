@@ -18,9 +18,10 @@ public class CustomerService {
     private final CustomerRepository customerRepository;
 
 
-//    public List<Customers> findAll() {
-//        return customerRepository.findAll();
-//    }
+    public List<Customers> findAll() {
+        return customerRepository.findAll();
+    }
+
     public Page<Customers> findAll(Pageable pageable) {
         return customerRepository.findAll(pageable);
     }

@@ -1,14 +1,14 @@
 package com.example.banking.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,4 +22,20 @@ public class Customers {
     private String email;
     private String address;
     private BigDecimal balance;
+
+    @OneToMany(mappedBy = "customerDeposit")
+    @JsonIgnore
+    private List<Deposits> deposits;
+
+    @OneToMany(mappedBy = "customerWithdraw")
+    @JsonIgnore
+    private List<Withdraws> withdraws;
+
+    @OneToMany(mappedBy = "sender")
+    @JsonIgnore
+    private List<Transfers> sentTransfers;
+
+    @OneToMany(mappedBy = "recipient")
+    @JsonIgnore
+    private List<Transfers> receivedTransfers;
 }
